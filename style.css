@@ -1,0 +1,252 @@
+/* ── Shatter Bloom Plugin ─────────────────────────────────── */
+
+.shatter-bloom-wrap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 0;
+  background: #000;
+  border-radius: 4px;
+}
+
+.shatter-bloom-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shatter-bloom-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Demo page styles ─────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #0a0a0c;
+  color: #e8e6e3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* header */
+.demo-header {
+  text-align: center;
+  padding: 3rem 1rem 1.5rem;
+}
+
+.demo-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fffbe6 0%, #fbbf24 60%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.demo-header p {
+  margin-top: 0.5rem;
+  color: #888;
+  font-size: 0.95rem;
+  max-width: 500px;
+}
+
+/* preview area */
+.demo-stage {
+  position: relative;
+  width: 90%;
+  max-width: 720px;
+  margin: 1rem auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(251, 191, 36, 0.08);
+}
+
+.demo-stage img {
+  width: 100%;
+  display: block;
+}
+
+/* controls panel */
+.demo-controls {
+  width: 90%;
+  max-width: 820px;
+  margin: 2rem auto 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.2rem 2rem;
+  background: #131316;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+}
+
+.ctrl-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ctrl-group label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ctrl-group label span {
+  color: #fbbf24;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ctrl-group input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #2a2a30;
+  outline: none;
+  cursor: pointer;
+}
+
+.ctrl-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fbbf24;
+  border: 2px solid #0a0a0c;
+  cursor: grab;
+  transition: transform 0.15s;
+}
+
+.ctrl-group input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+.ctrl-group input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 48px;
+  height: 28px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+}
+
+/* impact point grid */
+.impact-cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #1a1a1e;
+  color: #777;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.impact-cell:hover {
+  border-color: #fbbf24;
+  color: #fbbf24;
+  background: #222;
+}
+
+.impact-cell.active {
+  border-color: #f97316;
+  color: #f97316;
+  background: #2a1e0e;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.35);
+}
+
+.demo-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  padding-top: 0.6rem;
+}
+
+.demo-buttons button {
+  padding: 0.6rem 1.6rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-play {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: #0a0a0c;
+}
+
+.btn-play:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.35);
+}
+
+.btn-reset {
+  background: #222;
+  color: #ccc;
+  border: 1px solid #333 !important;
+}
+
+.btn-reset:hover {
+  background: #2a2a30;
+}
+
+/* footer */
+.demo-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #555;
+  font-size: 0.82rem;
+}
+
+.demo-footer a {
+  color: #fbbf24;
+  text-decoration: none;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .demo-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .demo-controls {
+    grid-template-columns: 1fr;
+    padding: 1.2rem;
+  }
+}

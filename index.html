@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shatter Bloom – Plugin Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="demo-header">
+    <h1>Shatter Bloom</h1>
+    <p>Cinematic wall-fracture effect — branching cracks propagate from an impact point, light pulses through the fissures, and the wall shatters to reveal a radiant glow.</p>
+  </header>
+
+  <!-- Preview -->
+  <div class="demo-stage">
+    <img
+      id="demo-img"
+      class="shatter-bloom"
+      src="demo.jpg"
+      alt="Shatter Bloom Demo"
+      data-wall-auto-play="false"
+    />
+    <div id="elapsed-bar" style="position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#fbbf24,#f97316);width:0;transition:none;z-index:10;pointer-events:none;"></div>
+    <div id="elapsed-label" style="position:absolute;bottom:8px;right:10px;font-size:0.72rem;color:#fbbf24;opacity:0;z-index:10;pointer-events:none;font-variant-numeric:tabular-nums;"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="demo-controls">
+
+    <!-- Timing -->
+    <div class="ctrl-group">
+      <label>Duration (min) <span id="val-duration">2</span></label>
+      <input type="range" id="ctrl-duration" min="0.1" max="8" step="0.1" value="2" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Fractures <span id="val-fractureCount" style="color:#fbbf24">70</span></label>
+      <span style="font-size:0.75rem;color:#666;margin-top:2px;">auto from branches × depth</span>
+    </div>
+
+    <div class="ctrl-group">
+      <label>Crack Branches <span id="val-crackBranches">7</span></label>
+      <input type="range" id="ctrl-crackBranches" min="3" max="14" step="1" value="7" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Crack Depth <span id="val-crackDepth">5</span></label>
+      <input type="range" id="ctrl-crackDepth" min="2" max="8" step="1" value="5" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Crack Width <span id="val-crackWidth">1.8</span></label>
+      <input type="range" id="ctrl-crackWidth" min="0.5" max="5" step="0.1" value="1.8" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Light Intensity <span id="val-lightIntensity">1.0</span></label>
+      <input type="range" id="ctrl-lightIntensity" min="0" max="1" step="0.05" value="1" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Light Rays <span id="val-lightRayCount">18</span></label>
+      <input type="range" id="ctrl-lightRayCount" min="0" max="40" step="1" value="18" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Dust Particles <span id="val-dustCount">120</span></label>
+      <input type="range" id="ctrl-dustCount" min="0" max="300" step="10" value="120" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Shake Intensity <span id="val-shakeIntensity">1.0</span></label>
+      <input type="range" id="ctrl-shakeIntensity" min="0" max="3" step="0.1" value="1" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Impact Strength <span id="val-impactStrength">1.0</span></label>
+      <input type="range" id="ctrl-impactStrength" min="0" max="2" step="0.1" value="1" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Impact BPM <span id="val-impactBPM">90</span></label>
+      <input type="range" id="ctrl-impactBPM" min="30" max="200" step="1" value="90" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Delay Spread <span id="val-delaySpread">0.35</span></label>
+      <input type="range" id="ctrl-delaySpread" min="0" max="0.8" step="0.05" value="0.35" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Gravity <span id="val-gravity">420</span></label>
+      <input type="range" id="ctrl-gravity" min="50" max="2000" step="10" value="420" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Rotation Speed <span id="val-rotationSpeed">1.8</span></label>
+      <input type="range" id="ctrl-rotationSpeed" min="0" max="6" step="0.1" value="1.8" />
+    </div>
+
+    <!-- Phase ratios -->
+    <div class="ctrl-group">
+      <label>Crack Phase <span id="val-crackPhase">0.30</span></label>
+      <input type="range" id="ctrl-crackPhase" min="0.1" max="0.5" step="0.05" value="0.30" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Rumble Phase <span id="val-rumblePhase">0.12</span></label>
+      <input type="range" id="ctrl-rumblePhase" min="0.0" max="0.3" step="0.02" value="0.12" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Light Phase <span id="val-lightPhase">0.18</span></label>
+      <input type="range" id="ctrl-lightPhase" min="0.05" max="0.4" step="0.05" value="0.18" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Break Phase <span id="val-breakPhase">0.30</span></label>
+      <input type="range" id="ctrl-breakPhase" min="0.1" max="0.5" step="0.05" value="0.30" />
+    </div>
+
+    <div class="ctrl-group">
+      <label>Light Color</label>
+      <input type="color" id="ctrl-lightColor" value="#fffbe6" />
+    </div>
+
+    <!-- impact point grid -->
+    <div class="ctrl-group" style="grid-column:1/-1;">
+      <label>Impact Point</label>
+      <div id="impact-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:180px;margin-top:4px;">
+        <button class="impact-cell" data-x="0.17" data-y="0.17">&#8598;</button>
+        <button class="impact-cell" data-x="0.50" data-y="0.17">&#8593;</button>
+        <button class="impact-cell" data-x="0.83" data-y="0.17">&#8599;</button>
+        <button class="impact-cell" data-x="0.17" data-y="0.50">&#8592;</button>
+        <button class="impact-cell active" data-x="0.50" data-y="0.50">&#9678;</button>
+        <button class="impact-cell" data-x="0.83" data-y="0.50">&#8594;</button>
+        <button class="impact-cell" data-x="0.17" data-y="0.83">&#8601;</button>
+        <button class="impact-cell" data-x="0.50" data-y="0.83">&#8595;</button>
+        <button class="impact-cell" data-x="0.83" data-y="0.83">&#8600;</button>
+      </div>
+    </div>
+
+    <!-- buttons -->
+    <div class="demo-buttons">
+      <button class="btn-play" id="btn-play">&#9654; Play</button>
+      <button class="btn-reset" id="btn-reset">&#8634; Reset</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="demo-footer">
+<p>Made by <a href="https://hesamameri.dev" target="_blank">Hesam Ameri</a> · <a href="https://github.com/hesamameri/shatter-bloom" target="_blank">GitHub</a></p>
+  </footer>
+
+  <script src="src/breaking-wall.js"></script>
+  <script>
+    (function () {
+      const img = document.getElementById("demo-img");
+      let instance = null;
+
+      /* ── generate procedural wall texture if demo.jpg is missing ── */
+      function generateWallTexture() {
+        const c = document.createElement("canvas");
+        c.width = 1200; c.height = 675;
+        const ctx = c.getContext("2d");
+
+        // dark base
+        ctx.fillStyle = "#1c1c22";
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        // noise
+        const id = ctx.getImageData(0, 0, c.width, c.height);
+        for (let i = 0; i < id.data.length; i += 4) {
+          const n = (Math.random() - 0.5) * 28;
+          id.data[i] += n; id.data[i+1] += n; id.data[i+2] += n;
+        }
+        ctx.putImageData(id, 0, 0);
+
+        // brick pattern
+        ctx.strokeStyle = "rgba(0,0,0,0.3)";
+        ctx.lineWidth = 2;
+        const bh = 45, bw = 90;
+        for (let y = 0; y < c.height; y += bh) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke();
+          const off = ((y / bh | 0) % 2) * bw / 2;
+          for (let x = off; x < c.width; x += bw) {
+            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + bh); ctx.stroke();
+          }
+        }
+
+        // vignette
+        const g = ctx.createRadialGradient(c.width/2, c.height/2, c.width*0.18, c.width/2, c.height/2, c.width*0.7);
+        g.addColorStop(0, "rgba(0,0,0,0)");
+        g.addColorStop(1, "rgba(0,0,0,0.55)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        img.src = c.toDataURL("image/jpeg", 0.92);
+      }
+
+      img.addEventListener("error", generateWallTexture, { once: true });
+
+      const sliders = [
+        "duration", "crackBranches", "crackDepth",
+        "crackWidth", "lightIntensity", "lightRayCount", "dustCount",
+        "shakeIntensity", "impactStrength", "impactBPM",
+        "delaySpread", "gravity", "rotationSpeed",
+        "crackPhase", "rumblePhase", "lightPhase", "breakPhase"
+      ];
+
+      /* impact point grid */
+      let impactX = 0.50, impactY = 0.50;
+      document.querySelectorAll(".impact-cell").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".impact-cell").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          impactX = parseFloat(btn.dataset.x);
+          impactY = parseFloat(btn.dataset.y);
+        });
+      });
+
+      function calcFractures() {
+        const branches = parseFloat(document.getElementById("ctrl-crackBranches").value);
+        const depth = parseFloat(document.getElementById("ctrl-crackDepth").value);
+        return Math.round(Math.max(20, branches * depth * 2));
+      }
+
+      function readSliders() {
+        const opts = {};
+        sliders.forEach(key => {
+          opts[key] = parseFloat(document.getElementById("ctrl-" + key).value);
+        });
+        opts.fractureCount = calcFractures();
+        opts.lightColor = document.getElementById("ctrl-lightColor").value;
+        opts.impactPoint = { x: impactX, y: impactY };
+        opts.autoPlay = false;
+        opts.loop = false;
+        return opts;
+      }
+
+      function updateLabels() {
+        sliders.forEach(key => {
+          const span = document.getElementById("val-" + key);
+          if (span) span.textContent = document.getElementById("ctrl-" + key).value;
+        });
+      }
+
+      sliders.forEach(key => {
+        document.getElementById("ctrl-" + key).addEventListener("input", updateLabels);
+      });
+
+      /* auto-link: branches/depth → fracture count & dust count */
+      function syncLinkedSliders() {
+        const fractures = calcFractures();
+        document.getElementById("val-fractureCount").textContent = fractures;
+
+        const dustSlider = document.getElementById("ctrl-dustCount");
+        dustSlider.value = Math.round(Math.max(10, Math.min(300, fractures * 2)));
+        updateLabels();
+      }
+
+      document.getElementById("ctrl-crackBranches").addEventListener("input", syncLinkedSliders);
+      document.getElementById("ctrl-crackDepth").addEventListener("input", syncLinkedSliders);
+
+      /* elapsed time HUD */
+      const elBar = document.getElementById("elapsed-bar");
+      const elLabel = document.getElementById("elapsed-label");
+      let playStart = 0, playDurMs = 0, timerRAF = null;
+
+      function fmtTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ":" + String(s).padStart(2, "0");
+      }
+
+      function tickTimer() {
+        const elapsed = (performance.now() - playStart) / 1000;
+        const total = playDurMs / 1000;
+        const pct = Math.min(elapsed / total, 1);
+        elBar.style.width = (pct * 100) + "%";
+        elLabel.textContent = fmtTime(elapsed) + " / " + fmtTime(total);
+        elLabel.style.opacity = "1";
+        if (pct < 1) timerRAF = requestAnimationFrame(tickTimer);
+      }
+
+      // Play
+      document.getElementById("btn-play").addEventListener("click", () => {
+        if (instance) instance.destroy();
+        if (timerRAF) cancelAnimationFrame(timerRAF);
+        const opts = readSliders();
+        instance = ShatterBloom.attach(img, opts);
+        instance.play();
+        playStart = performance.now();
+        playDurMs = opts.duration * 60 * 1000;
+        tickTimer();
+      });
+
+      // Reset
+      document.getElementById("btn-reset").addEventListener("click", () => {
+        if (instance) { instance.destroy(); instance = null; }
+        if (timerRAF) cancelAnimationFrame(timerRAF);
+        elBar.style.width = "0";
+        elLabel.style.opacity = "0";
+      });
+    })();
+  </script>
+</body>
+</html>
