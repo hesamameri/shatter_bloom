@@ -2,7 +2,7 @@
 
 A dramatic wall-fracture effect for the browser: branching cracks propagate from an impact point, light pulses and seeps through the fissures, dust falls from the cracks, and the wall shatters with physics-driven fragments to reveal a radiant glow.
 
-![demo](demo.jpg)
+**[▶ Live Demo](https://hesamameri.github.io/shatter_bloom/)**
 
 ## Quick Start
 
